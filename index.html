@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:url("https://i.ibb.co/WvyLbf9W/bg.png") center/cover no-repeat;
+}
+
+#score{
+font-family:'Press Start 2P', monospace;
+font-size:60px;
+color:#c06cff;
+text-shadow:5px 5px #5a00a3;
+margin-bottom:70px;
+}
+
+.bounce{
+animation:bounce 0.25s;
+}
+
+@keyframes bounce{
+0%{transform:scale(1);}
+50%{transform:scale(1.3);}
+100%{transform:scale(1);}
+}
+
+#btn{
+background:none;
+border:none;
+cursor:pointer;
+}
+
+#btn img{
+width:200px;
+}
+
+#reset{
+position:absolute;
+top:20px;
+left:20px;
+font-family:'Press Start 2P';
+font-size:20px;
+padding:20px 28px;
+background:#7a2cff;
+color:white;
+border:5px solid #3b008a;
+box-shadow:6px 6px #2a0061;
+cursor:pointer;
+}
+
+#reset:active{
+transform:translate(2px,2px);
+box-shadow:3px 3px #2a0061;
+}
+
+</style>
+</head>
+
+<body>
+
+<button id="reset">RESET</button>
+
+<div id="score">0</div>
+
+<button id="btn">
+<img src="https://i.ibb.co/jkjY9mBw/button.png">
+</button>
+
+<audio id="click">
+<source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_c6ccf4a3c7.mp3">
+</audio>
+
+<audio id="blup">
+<source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_6d7c8b2e6b.mp3">
+</audio>
+
+<script>
+
+let score = localStorage.getItem("score");
+score = score ? parseInt(score) : 0;
+
+const scoreText = document.getElementById("score");
+const btn = document.getElementById("btn");
+const reset = document.getElementById("reset");
+
+const click = document.getElementById("click");
+const blup = document.getElementById("blup");
+
+scoreText.innerText = score;
+
+/* tombol utama */
+
+btn.onclick = function(){
+
+score++;
+
+scoreText.innerText = score;
+
+localStorage.setItem("score",score);
+
+click.currentTime = 0;
+click.play();
+
+scoreText.classList.remove("bounce");
+void scoreText.offsetWidth;
+scoreText.classList.add("bounce");
+
+setTimeout(()=>{
+blup.currentTime = 0;
+blup.play();
+},800);
+
+}
+
+/* sistem reset anti bug */
+
+let resetClicks = 0;
+let resetTimer = null;
+
+reset.onclick = function(){
+
+resetClicks++;
+
+if(resetTimer){
+clearTimeout(resetTimer);
+}
+
+resetTimer = setTimeout(()=>{
+
+if(resetClicks === 1){
+
+score = 0;
+scoreText.innerText = score;
+localStorage.setItem("score",score);
+
+}
+
+else if(resetClicks >= 3){
+
+let newScore = prompt("Masukkan angka baru:");
+
+if(newScore !== null){
+
+let n = parseInt(newScore);
+
+if(!isNaN(n)){
+score = n;
+scoreText.innerText = score;
+localStorage.setItem("score",score);
+}
+
+}
+
+}
+
+resetClicks = 0;
+
+},1000);
+
+}
+
+</script>
+
+</body>
+</html>
